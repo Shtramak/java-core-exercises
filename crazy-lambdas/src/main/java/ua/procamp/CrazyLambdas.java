@@ -40,7 +40,7 @@ public class CrazyLambdas {
      * @return function that converts adds dollar sign
      */
     public static Function<BigDecimal, String> toDollarStringFunction() {
-        return val -> "$" + val.toString();
+        return bigDecimal -> "$" + bigDecimal.toString();
     }
 
     /**
@@ -52,7 +52,7 @@ public class CrazyLambdas {
      * @return a string predicate
      */
     public static Predicate<String> lengthInRangePredicate(int min, int max) {
-        return val -> (val.length() >= min && val.length() < max);
+        return a -> a.length() >= min && a.length() < max;
     }
 
     /**
@@ -80,7 +80,7 @@ public class CrazyLambdas {
      * @return square operation
      */
     public static IntUnaryOperator intSquareOperation() {
-        return val -> val * val;
+        return a -> a * a;
     }
 
     /**
@@ -89,7 +89,7 @@ public class CrazyLambdas {
      * @return binary sum operation
      */
     public static LongBinaryOperator longSumOperation() {
-        return (val1, val2) -> val1 + val2;
+        return (a, b) -> a + b;
     }
 
     /**
@@ -109,7 +109,7 @@ public class CrazyLambdas {
      * @return a function supplier
      */
     public static Supplier<IntUnaryOperator> nMultiplyFunctionSupplier(int n) {
-        return () -> val -> val * n;
+        return () -> operand -> n * operand;
     }
 
     /**
@@ -163,7 +163,7 @@ public class CrazyLambdas {
      * @return a binary function that receiver predicate and function and compose them to create a new function
      */
     public static BiFunction<IntUnaryOperator, IntPredicate, IntUnaryOperator> functionToConditionalFunction() {
-        return (unaryOperator, predicate) -> val -> predicate.test(val) ? unaryOperator.applyAsInt(val) : val;
+        return (unaryOperator, predicate) -> value -> predicate.test(value) ? unaryOperator.applyAsInt(value) : value;
     }
 
     /**
