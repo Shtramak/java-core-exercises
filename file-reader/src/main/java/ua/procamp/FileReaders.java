@@ -7,12 +7,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * {@link FileReaders} privides an API that allow to read whole file into a {@link String} by file name.
  */
 public class FileReaders {
-
 
     /**
      * Returns a {@link String} that contains whole text from the file specified by name.
@@ -21,22 +22,27 @@ public class FileReaders {
      * @return string that holds whole file content
      */
     public static String readWholeFile(String fileName) {
-        URL url = FileReaders.class.getClassLoader().getResource(fileName);
-        List<String> allLines = null;
-        try {
-            allLines = Files.readAllLines(getPath(url));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return String.join("\n", allLines);
+        Path path = getPath(fileName);
+        List<String> allLines = allLines(path);
+        return allLines.stream()
+                .collect(Collectors.joining("\n"));
     }
 
-    private static Path getPath(URL url) {
+    public static List<String> allLines(Path path) {
         try {
-            Path path = Paths.get(url.toURI());
-            return path;
+            return Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new RuntimeException("Smth goes wrong...", e);
+        }
+    }
+
+    private static Path getPath(String fileName) {
+        URL url = FileReaders.class.getClassLoader().getResource(fileName);
+        Objects.requireNonNull(url);
+        try {
+            return Paths.get(url.toURI());
         } catch (URISyntaxException e) {
-            throw new IllegalStateException();
+            throw new RuntimeException("Can't get a path from passed parameter fileName", e);
         }
     }
 }
